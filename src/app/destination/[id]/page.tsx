@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { fetchDestinationDetails } from '@/services/gemini'
 import Footer from '@/components/Footer'
 import PlaceholderImage from '@/components/PlaceholderImage'
+import Navbar from '@/components/Navbar'
 
 interface Activity {
   name: string;
@@ -84,28 +85,7 @@ export default function DestinationPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
-      <div className="sticky top-4 z-50 mx-4 sm:mx-8">
-        <nav className="max-w-7xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-8 py-6">
-              <div className="flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-blue-600">BiyaHero</span>
-                </Link>
-                <div className="hidden md:flex items-center gap-4">
-                  <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-                    Log in
-                  </button>
-                  <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                    Sign up
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
+      <Navbar />
       <div className="max-w-4xl mx-auto px-8 py-12">
         <DestinationSkeleton />
       </div>
@@ -130,32 +110,10 @@ export default function DestinationPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
-      <div className="sticky top-4 z-50 mx-4 sm:mx-8">
-        <nav className="max-w-7xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-8 py-6">
-              <div className="flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-blue-600">BiyaHero</span>
-                </Link>
-                <div className="hidden md:flex items-center gap-4">
-                  <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-                    Log in
-                  </button>
-                  <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                    Sign up
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-
+      <Navbar />
+      
       {/* Main Content */}
-      <div className="w-full">
-        {/* Content Container - moved up */}
+      <div className="flex-grow">
         <div className="max-w-7xl mx-auto px-8 py-12">
           {/* Hero Image Card */}
           <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm mb-8">

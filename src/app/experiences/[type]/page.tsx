@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { destinationData } from '@/data/destinations'
 import type { Destination, ExperienceData } from '@/data/destinations'
 import PlaceholderImage from '@/components/PlaceholderImage'
+import Navbar from '@/components/Navbar'
 
 function DestinationCard({ destination, index }: { destination: Destination; index: number }) {
   const router = useRouter();
@@ -112,24 +113,7 @@ export default function ExperiencePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
-      <div className="sticky top-4 z-50 mx-4 sm:mx-8">
-        <nav className="max-w-7xl mx-auto bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm">
-          <div className="px-8 py-6 flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold text-blue-600">
-              BiyaHero
-            </Link>
-            <div className="hidden md:flex items-center gap-4">
-              <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600">
-                Log in
-              </button>
-              <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-                Sign up
-              </button>
-            </div>
-          </div>
-        </nav>
-      </div>
+      <Navbar />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-8 py-12">

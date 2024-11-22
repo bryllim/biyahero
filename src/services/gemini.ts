@@ -223,7 +223,36 @@ export async function fetchDestinations(experienceType: string): Promise<Destina
   }
 }
 
-export async function fetchDestinationDetails(destinationId: string) {
+interface DestinationDetails {
+  name: string;
+  location: string;
+  description: string;
+  bestTimeToVisit: {
+    period: string;
+    details: string;
+  };
+  activities: {
+    name: string;
+    description: string;
+  }[];
+  cuisine: {
+    name: string;
+    description: string;
+  }[];
+  travelTips: string[];
+  transportation: {
+    howToGetThere: string;
+    localTransport: string;
+  };
+  accommodation: {
+    budget: string[];
+    midRange: string[];
+    luxury: string[];
+  };
+  imageUrl?: string;
+}
+
+export async function fetchDestinationDetails(destinationId: string): Promise<DestinationDetails> {
   // First try to find the destination in our existing data
   for (const category of Object.values(destinationData)) {
     const destination = [...category.popular, ...category.alternatives]
@@ -233,12 +262,14 @@ export async function fetchDestinationDetails(destinationId: string) {
       // Return the destination in the format we need
       return {
         name: destination.name,
+        location: destination.location,
         description: destination.description,
+        imageUrl: destination.imageUrl,
         bestTimeToVisit: {
           period: destination.bestTime,
           details: `Best time to visit ${destination.name} is during ${destination.bestTime} when the weather is most favorable for all activities.`
         },
-        activities: destination.activities.map((activity: string) => ({
+        activities: destination.activities.map(activity => ({
           name: activity,
           description: `Experience ${activity} in ${destination.name}`
         })),
