@@ -2,58 +2,68 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
+import ProfileNavbar from '@/components/ProfileNavbar';
 import { User } from '@/types/user';
 import { 
   TrophyIcon, 
-  MapIcon, 
   CalendarIcon,
-  PencilSquareIcon,
-  ChevronRightIcon,
   MapPinIcon,
-  ClockIcon,
   BuildingLibraryIcon
 } from '@heroicons/react/24/outline';
+import Image from 'next/image';
+import { StarIcon } from '@heroicons/react/20/solid';
+import {
+  FireIcon,
+  HeartIcon,
+  PhotoIcon,
+  UserGroupIcon
+} from '@heroicons/react/24/outline';
+import AIInsightsCard from '@/components/AIInsightsCard';
 
-// Updated mock data with more realistic content
+// Enhanced mock data with more realistic content
 const mockUserData: User = {
   id: 'usr_748159263',
   name: 'Alexandra Chen',
   email: 'alex.chen@example.com',
   avatar: 'https://api.dicebear.com/7.x/personas/svg?seed=Alex',
-  role: 'Travel Enthusiast',
+  role: 'Adventure Seeker',
+  bio: 'Passionate traveler exploring the hidden gems of Southeast Asia. 📸 Photography enthusiast. 🌏 25 countries and counting!',
   badges: [
     {
       id: 'bdg_1',
-      name: 'Island Hopper',
+      name: 'Island Explorer',
       icon: 'IslandIcon',
-      description: 'Visited 10+ islands in the Philippines',
+      description: 'Visited 15+ tropical islands',
       earnedAt: '2024-03-01',
-      level: 'gold'
+      level: 'platinum',
+      progress: 100
     },
     {
       id: 'bdg_2',
-      name: 'Culture Seeker',
+      name: 'Culture Maven',
       icon: 'CultureIcon',
-      description: 'Explored 5 UNESCO heritage sites',
+      description: 'Explored 8 UNESCO heritage sites',
       earnedAt: '2024-02-15',
-      level: 'silver'
+      level: 'gold',
+      progress: 80
     },
     {
       id: 'bdg_3',
-      name: 'Adventure Master',
+      name: 'Thrill Seeker',
       icon: 'AdventureIcon',
-      description: 'Completed 8 extreme activities',
+      description: 'Completed 12 extreme activities',
       earnedAt: '2024-01-20',
-      level: 'platinum'
+      level: 'platinum',
+      progress: 100
     },
     {
       id: 'bdg_4',
-      name: 'Local Foodie',
+      name: 'Culinary Adventurer',
       icon: 'FoodIcon',
-      description: 'Tried 20+ local delicacies',
+      description: 'Sampled 30+ local delicacies',
       earnedAt: '2024-02-28',
-      level: 'gold'
+      level: 'gold',
+      progress: 75
     }
   ],
   visitedPlaces: [
@@ -61,19 +71,25 @@ const mockUserData: User = {
       id: 'plc_1',
       name: 'Siargao Islands',
       date: '2024-02-28',
-      type: 'Island',
+      type: 'Island Paradise',
       rating: 5,
-      photos: 12,
-      reviews: 2
+      photos: 24,
+      reviews: 3,
+      coverImage: '/images/siargao.jpg',
+      highlights: ['Cloud 9 Surfing', 'Island Hopping', 'Sugba Lagoon'],
+      description: "A surfer's paradise with crystal clear waters and vibrant island life."
     },
     {
       id: 'plc_2',
       name: 'Banaue Rice Terraces',
       date: '2024-02-15',
-      type: 'Heritage',
+      type: 'UNESCO Heritage',
       rating: 5,
-      photos: 8,
-      reviews: 1
+      photos: 18,
+      reviews: 2,
+      coverImage: '/images/banaue.jpg',
+      highlights: ['Sunrise Viewing', 'Cultural Tour', 'Local Homestay'],
+      description: 'Ancient rice terraces carved into the mountains of Ifugao.'
     },
     {
       id: 'plc_3',
@@ -82,48 +98,56 @@ const mockUserData: User = {
       type: 'Natural Wonder',
       rating: 4,
       photos: 15,
-      reviews: 3
+      reviews: 3,
+      coverImage: '/images/chocolate-hills.jpg',
+      highlights: ['Viewpoint Trek', 'ATV Adventure', 'Sunset Watch'],
+      description: 'Unique geological formation featuring over 1,000 symmetrical hills.'
     }
   ],
   savedItineraries: [
     {
       id: 'itn_1',
-      title: 'Palawan Island Expedition',
+      title: 'Ultimate Palawan Adventure',
       destination: 'El Nido & Coron',
       dates: '2024-04-15 - 2024-04-22',
-      status: 'upcoming' as const,
+      status: 'upcoming',
       coverImage: '/images/palawan.jpg',
-      activities: 8,
-      budget: '₱45,000'
+      activities: 12,
+      budget: '₱55,000',
+      companions: 3,
+      highlights: ['Island Hopping', 'Scuba Diving', 'Beach Camping']
     },
     {
       id: 'itn_2',
-      title: 'Northern Luzon Cultural Tour',
+      title: 'Northern Heritage Trail',
       destination: 'Vigan, Sagada, Banaue',
       dates: '2024-05-01 - 2024-05-07',
-      status: 'draft' as const,
+      status: 'draft',
       coverImage: '/images/vigan.jpg',
-      activities: 12,
-      budget: '₱35,000'
+      activities: 15,
+      budget: '₱45,000',
+      companions: 2,
+      highlights: ['Historical Tours', 'Cave Exploration', 'Mountain Trekking']
     },
     {
       id: 'itn_3',
       title: 'Cebu Adventure Week',
       destination: 'Cebu City & Moalboal',
       dates: '2024-06-10 - 2024-06-16',
-      status: 'completed' as const,
+      status: 'completed',
       coverImage: '/images/cebu.jpg',
       activities: 10,
-      budget: '₱40,000'
+      budget: '₱40,000',
+      companions: 4,
+      highlights: ['Whale Shark Watching', 'Canyoneering', 'Island Hopping']
     }
   ],
-  stats: {
-    totalDistance: '1,234 km',
-    placesVisited: 15,
-    photosUploaded: 127,
-    reviewsWritten: 8
-  },
-  joinedAt: '2024-01-01'
+  joinedAt: '2024-01-01',
+  socialLinks: {
+    instagram: '@alex.adventures',
+    youtube: 'AlexExplores',
+    blog: 'travelswithalex.com'
+  }
 };
 
 export default function UserDashboard() {
@@ -132,30 +156,15 @@ export default function UserDashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // In a real app, fetch user data from API
-    const loadUserData = async () => {
-      try {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-          setUser(JSON.parse(userData));
-        } else {
-          // Remove the 'as const' to make it compatible with User type
-          setUser(mockUserData as User);
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadUserData();
+    console.log('Setting mock data:', mockUserData);
+    setUser(mockUserData);
+    setIsLoading(false);
   }, []);
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-        <Navbar />
+        <ProfileNavbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="animate-pulse space-y-8">
             <div className="h-64 bg-white rounded-3xl"></div>
@@ -213,120 +222,77 @@ export default function UserDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <Navbar />
+    <div className="min-h-screen bg-gray-50">
+      <ProfileNavbar />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Profile Header Card */}
-        <div className="bg-white rounded-3xl border border-gray-200 shadow-lg overflow-hidden mb-8">
-          <div className="relative h-32 bg-gradient-to-r from-blue-500 to-purple-600">
-            <div className="absolute -bottom-12 left-8 flex items-end gap-6">
-              <div className="relative group">
-                <div className="w-24 h-24 rounded-2xl bg-white p-1 shadow-lg">
-                  <img 
-                    src={user.avatar} 
-                    alt={user.name}
-                    className="w-full h-full rounded-xl object-cover"
-                  />
-                </div>
-              </div>
-              <div className="mb-3">
-                <h1 className="text-2xl font-bold text-white">{user.name}</h1>
-                <p className="text-blue-100 flex items-center gap-2">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {user.role}
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="pt-16 pb-6 px-8">
-            <div className="flex items-center justify-between">
-              {renderStats()}
-              <button className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium 
-                               text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 
-                               hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow">
-                <PencilSquareIcon className="w-4 h-4 mr-2" />
-                Edit Profile
-              </button>
+      <main className="max-w-5xl mx-auto px-4 py-8">
+        {/* Profile Header */}
+        <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+          <div className="flex items-center gap-6">
+            <img 
+              src={user?.avatar} 
+              alt={user?.name}
+              className="w-20 h-20 rounded-xl object-cover"
+            />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">{user?.name}</h1>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-1">
+                {user?.role}
+              </span>
+              <p className="text-sm text-gray-600 mt-2">{user?.bio}</p>
             </div>
           </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Badges Section */}
-            <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2 mb-6">
-                <TrophyIcon className="w-6 h-6 text-yellow-500" />
-                Achievement Badges
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Left Column (Badges & Recent Places) */}
+          <div className="md:col-span-2">
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+                <TrophyIcon className="w-5 h-5 text-yellow-500" />
+                Achievements
               </h2>
-              <div className="grid grid-cols-2 gap-4">
-                {user.badges.map((badge) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {user?.badges?.map((badge) => (
                   <div 
                     key={badge.id}
-                    className="group relative bg-white rounded-xl border border-gray-200 p-4 
-                             transition-all duration-300 hover:shadow-lg hover:border-blue-200"
+                    className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:border-blue-100 transition-colors"
                   >
-                    <div className={`absolute top-0 right-0 w-20 h-1 rounded-full 
-                                   bg-gradient-to-r ${getBadgeLevelColor(badge.level)}`} />
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 
-                                    flex items-center justify-center">
-                        <TrophyIcon className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{badge.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{badge.description}</p>
-                        <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
-                          <ClockIcon className="w-3 h-3" />
-                          Earned {new Date(badge.earnedAt).toLocaleDateString()}
-                        </p>
-                      </div>
+                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                      <TrophyIcon className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-900">{badge.name}</h3>
+                      <p className="text-xs text-gray-500">{badge.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Recent Places */}
-            <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2 mb-6">
-                <MapPinIcon className="w-6 h-6 text-red-500" />
-                Recent Adventures
+            {/* Recent Places Section */}
+            <div className="bg-white rounded-2xl shadow-sm p-6 mt-6">
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+                <MapPinIcon className="w-5 h-5 text-red-500" />
+                Recent Places
               </h2>
-              <div className="space-y-4">
-                {user.visitedPlaces.map((place) => (
+              <div className="space-y-3">
+                {user?.visitedPlaces?.map((place) => (
                   <div 
                     key={place.id}
-                    className="group bg-white rounded-xl border border-gray-200 p-4 
-                             transition-all duration-300 hover:shadow-md"
+                    className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 
-                                      flex items-center justify-center">
-                          <BuildingLibraryIcon className="w-8 h-8 text-purple-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-gray-900">{place.name}</h3>
-                          <div className="flex items-center gap-4 mt-1">
-                            <span className="text-sm text-gray-600">{place.type}</span>
-                            <div className="flex items-center gap-1">
-                              <span className="text-sm text-yellow-500">★</span>
-                              <span className="text-sm text-gray-600">{place.rating}</span>
-                            </div>
-                            <span className="text-sm text-gray-600">{place.photos} photos</span>
-                          </div>
-                        </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center">
+                        <BuildingLibraryIcon className="w-6 h-6 text-purple-500" />
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-500">
-                          {new Date(place.date).toLocaleDateString()}
-                        </p>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{place.name}</h3>
+                        <p className="text-xs text-gray-500">{place.type}</p>
                       </div>
+                    </div>
+                    <div className="text-right text-sm text-gray-500">
+                      {new Date(place.date).toLocaleDateString()}
                     </div>
                   </div>
                 ))}
@@ -334,39 +300,38 @@ export default function UserDashboard() {
             </div>
           </div>
 
-          {/* Right Column - Itineraries */}
-          <div className="space-y-8">
-            <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2 mb-6">
-                <CalendarIcon className="w-6 h-6 text-green-500" />
+          {/* Right Column (AI Insights & Travel Plans) */}
+          <div className="space-y-6">
+            {/* AI Insights Card */}
+            <AIInsightsCard user={user} />
+
+            {/* Travel Plans Section */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+                <CalendarIcon className="w-5 h-5 text-green-500" />
                 Travel Plans
               </h2>
-              <div className="space-y-4">
-                {user.savedItineraries.map((itinerary) => (
+              <div className="space-y-3">
+                {user?.savedItineraries?.map((itinerary) => (
                   <div 
                     key={itinerary.id}
-                    className="group bg-white rounded-xl border border-gray-200 overflow-hidden
-                             transition-all duration-300 hover:shadow-lg"
+                    className="rounded-xl border border-gray-100 overflow-hidden hover:border-blue-100 transition-colors"
                   >
-                    <div className="aspect-video w-full bg-gray-100 relative">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <h3 className="font-medium text-white">{itinerary.title}</h3>
-                        <p className="text-sm text-gray-200">{itinerary.destination}</p>
+                    <div className="p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-medium text-gray-900">{itinerary.title}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium
+                          ${itinerary.status === 'upcoming' ? 'bg-green-100 text-green-800' :
+                            itinerary.status === 'draft' ? 'bg-gray-100 text-gray-800' :
+                            'bg-blue-100 text-blue-800'}`}>
+                          {itinerary.status}
+                        </span>
                       </div>
-                      <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium
-                        ${itinerary.status === 'upcoming' ? 'bg-green-100 text-green-800' :
-                          itinerary.status === 'draft' ? 'bg-gray-100 text-gray-800' :
-                          'bg-blue-100 text-blue-800'}`}>
-                        {itinerary.status}
-                      </span>
-                    </div>
-                    <div className="p-4">
-                      <div className="flex items-center justify-between text-sm text-gray-600">
+                      <p className="text-sm text-gray-600">{itinerary.destination}</p>
+                      <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
                         <span>{itinerary.activities} activities</span>
                         <span>{itinerary.budget}</span>
                       </div>
-                      <p className="text-xs text-gray-500 mt-2">{itinerary.dates}</p>
                     </div>
                   </div>
                 ))}
