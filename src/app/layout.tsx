@@ -26,9 +26,38 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative min-h-screen`}
       >
-        {children}
+        {/* Video Background Layer */}
+        <div className="fixed inset-0 z-0">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-50"
+          >
+            <source src="/heroVideo.mp4" type="video/mp4" />
+          </video>
+          
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent opacity-90" />
+          
+          {/* Pattern Overlay */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, rgb(226 232 240) 1px, transparent 0)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </div>
+        
+        {/* Main Content */}
+        <div className="relative z-10">
+          {children}
+        </div>
       </body>
     </html>
   );
