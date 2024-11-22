@@ -135,7 +135,7 @@ export default function Home() {
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-cover bg-center">
         {/* Background Image with Opacity */}
-        <div className="absolute inset-0 z-0 before:absolute before:inset-0 before:content-[''] before:bg-[url('/heroBg.jpg')] before:bg-cover before:bg-center before:opacity-50 before:pointer-events-none" />
+        <div className="absolute inset-0 z-0 before:absolute before:inset-0 before:content-['']  before:bg-cover before:bg-center before:opacity-50 before:pointer-events-none" />
 
         {/* Gradient Overlay - White to Transparent */}
         <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent opacity-90 z-10" />
