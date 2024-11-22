@@ -8,7 +8,6 @@ import {
   TrophyIcon, 
   CalendarIcon,
   MapPinIcon,
-  BuildingLibraryIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { StarIcon } from '@heroicons/react/20/solid';
@@ -19,6 +18,7 @@ import {
   UserGroupIcon
 } from '@heroicons/react/24/outline';
 import AIInsightsCard from '@/components/AIInsightsCard';
+import TravelMapCard from '@/components/TravelMapCard';
 
 // Enhanced mock data with more realistic content
 const mockUserData: User = {
@@ -245,8 +245,12 @@ export default function UserDashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Left Column (Badges & Recent Places) */}
-          <div className="md:col-span-2">
+          {/* Left Column (Travel Map & Badges) */}
+          <div className="md:col-span-2 space-y-6">
+            {/* Travel Map Card */}
+            <TravelMapCard user={user} />
+
+            {/* Badges Section */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
                 <TrophyIcon className="w-5 h-5 text-yellow-500" />
@@ -264,35 +268,6 @@ export default function UserDashboard() {
                     <div>
                       <h3 className="font-medium text-gray-900">{badge.name}</h3>
                       <p className="text-xs text-gray-500">{badge.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Recent Places Section */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 mt-6">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
-                <MapPinIcon className="w-5 h-5 text-red-500" />
-                Recent Places
-              </h2>
-              <div className="space-y-3">
-                {user?.visitedPlaces?.map((place) => (
-                  <div 
-                    key={place.id}
-                    className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center">
-                        <BuildingLibraryIcon className="w-6 h-6 text-purple-500" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{place.name}</h3>
-                        <p className="text-xs text-gray-500">{place.type}</p>
-                      </div>
-                    </div>
-                    <div className="text-right text-sm text-gray-500">
-                      {new Date(place.date).toLocaleDateString()}
                     </div>
                   </div>
                 ))}

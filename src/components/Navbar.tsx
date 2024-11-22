@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar() {
   return (
@@ -7,8 +8,15 @@ export default function Navbar() {
         <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl shadow-sm">
           <div className="px-8 py-6">
             <div className="flex items-center justify-between">
-              <Link href="/" className="text-xl font-bold text-blue-600 shrink-0">
-                BiyaHero
+              <Link href="/" className="shrink-0">
+                <Image
+                  src="/biyahero_logo.png"
+                  alt="BiyaHero Logo"
+                  width={180}
+                  height={60}
+                  className="h-12 w-auto"
+                  priority
+                />
               </Link>
               <div className="hidden md:flex items-center justify-center flex-1 mx-8">
                 <div className="flex items-center gap-6">

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   UserCircleIcon, 
   TrophyIcon, 
@@ -17,8 +18,14 @@ export default function ProfileNavbar() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="text-xl font-bold text-blue-600">
-              Biyahero
+            <Link href="/">
+              <Image
+                src="/biyahero_logo.png"
+                alt="BiyaHero Logo"
+                width={180}
+                height={60}
+                className="h-12 w-auto"
+              />
             </Link>
           </div>
           

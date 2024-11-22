@@ -99,7 +99,16 @@ export default function Home() {
             <div className="px-8 py-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xl font-bold text-blue-600">BiyaHero</span>
+                  <Link href="/" className="shrink-0">
+                    <Image
+                      src="/biyahero_logo.png"
+                      alt="BiyaHero Logo"
+                      width={180}
+                      height={60}
+                      className="h-12 w-auto"
+                      priority
+                    />
+                  </Link>
                 </div>
                 <div className="hidden md:flex items-center gap-8">
                   {navLinks.map((link) => (
@@ -340,7 +349,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div>
-                <span className="text-xl font-bold text-blue-600">BiyaHero</span>
+                <Image
+                  src="/biyahero_logo.png"
+                  alt="BiyaHero Logo"
+                  width={180}
+                  height={60}
+                  className="h-12 w-auto"
+                />
               </div>
               <p className="text-sm text-gray-600">
                 Discover the Philippines through unique experiences.
