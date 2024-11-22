@@ -24,7 +24,16 @@ function DestinationCard({ destination, index }: { destination: Destination; ind
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="relative h-40 overflow-hidden">
-        <PlaceholderImage />
+        <div className="aspect-w-4 aspect-h-3">
+          <img
+            src={destination.imageUrl}
+            alt={destination.name}
+            className="w-full h-full object-cover rounded-t-lg transition-transform duration-500 
+                     group-hover:scale-110 group-hover:opacity-90"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent 
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
       <div className="p-4 space-y-3">

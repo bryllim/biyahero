@@ -29,7 +29,7 @@ export const destinationData = {
         description: "World-famous white beach paradise with crystal clear waters",
         activities: ["Swimming", "Island Hopping", "Water Sports", "Sunset Sailing"],
         bestTime: "November to May",
-        imageUrl: "https://images.unsplash.com/photo-1551966775-8b8c7a8b7755"
+        imageUrl: "https://lp-cms-production.imgix.net/2023-05/shutterstock_editorial_1741828760.jpg?fit=crop&ar=1%3A1&w=1200&auto=format&q=75"
       },
       {
         id: 2,
@@ -38,7 +38,7 @@ export const destinationData = {
         description: "Stunning limestone cliffs and crystal-clear lagoons",
         activities: ["Island Hopping", "Kayaking", "Snorkeling", "Cave Exploration"],
         bestTime: "December to March",
-        imageUrl: "https://images.unsplash.com/photo-1573978125674-b8c047dc6aaa"
+        imageUrl: "https://www.vacationhive.com/images/hives/2/2-el-nido-gallery-img3.jpg"
       },
       {
         id: 3,
@@ -47,7 +47,7 @@ export const destinationData = {
         description: "Surfing capital of the Philippines with pristine beaches",
         activities: ["Surfing", "Island Hopping", "Swimming", "Beach Camping"],
         bestTime: "September to November",
-        imageUrl: "https://images.unsplash.com/photo-1584350954229-fb6a353c6610"
+        imageUrl: "https://www.blisssiargao.com/wp-content/uploads/2023/07/Siargao-Beaches-1030x775.jpg"
       },
       {
         id: 4,
@@ -56,16 +56,16 @@ export const destinationData = {
         description: "Famous for wreck diving and pristine lagoons",
         activities: ["Diving", "Snorkeling", "Lake Tours", "Beach Hopping"],
         bestTime: "December to March",
-        imageUrl: "https://images.unsplash.com/photo-1573790387438-4da905039392"
+        imageUrl: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/24/74/3e/kayangan-lake.jpg?w=1400&h=1400&s=1"
       },
       {
-        id: 5,
+        id: 5,  
         name: "Panglao",
         location: "Bohol",
         description: "White sand beaches and vibrant marine life",
         activities: ["Diving", "Dolphin Watching", "Island Tours", "Beach Relaxation"],
         bestTime: "March to May",
-        imageUrl: "https://images.unsplash.com/photo-1552939452-8b1c50ea2f10"
+        imageUrl: "https://mediaim.expedia.com/destination/1/638fa6523282f2171755a310bcf45ae1.jpg"
       }
     ],
     alternatives: [
@@ -79,7 +79,7 @@ export const destinationData = {
         advantages: ["Less crowded than Boracay", "More authentic island experience"],
         comparedTo: "Boracay",
         priceRange: "$",
-        imageUrl: "https://images.unsplash.com/photo-1597953601374-1ff2d5640c85"
+        imageUrl: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjWrbMeVwQcj6AtoA8Z9atYagc8jP8CXvc29ewrCHNFf8kIJibRBOXLBoQptZG_hwN3HLvN4c9m1Nlai2EgqO0P263H8KwzDa-WMemRJQ5kYBSsc4sDRc8OR9hjpt0iqkoCUeNPfoQAqYWU/s1600/Calaguas+Island+on+a+Sunny+Day+.jpg"
       },
       {
         id: 7,
@@ -91,7 +91,7 @@ export const destinationData = {
         advantages: ["More peaceful atmosphere", "Better value for money"],
         comparedTo: "El Nido",
         priceRange: "$$",
-        imageUrl: "https://images.unsplash.com/photo-1591373/pexels-photo-1591373.jpeg"
+        imageUrl: "https://cdn.prod.website-files.com/576fd5a8f192527e50a4b95c/5d864545f0c5f3f16281fe55_port%20barton%20island.jpg"
       },
       {
         id: 8,
@@ -103,7 +103,7 @@ export const destinationData = {
         advantages: ["Uncrowded kitesurfing spot", "Pristine environment"],
         comparedTo: "Boracay",
         priceRange: "$$",
-        imageUrl: "https://images.pexels.com/photos/1802255/pexels-photo-1802255.jpeg"
+        imageUrl: "https://mlafqlkvsrtu.i.optimole.com/w:1080/h:810/q:mauto/f:best/https://islandhoppinginthephilippines.com/visayas/wp-content/uploads/2022/11/64660807_459912151475518_8598768162906832896_n.jpg"
       },
       {
         id: 9,
@@ -115,7 +115,7 @@ export const destinationData = {
         advantages: ["Off the tourist radar", "Raw natural beauty"],
         comparedTo: "Boracay",
         priceRange: "$",
-        imageUrl: "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg"
+        imageUrl: "https://i0.wp.com/www.explore.com/img/gallery/this-beautiful-philippines-island-is-an-idyllic-escape-for-travelers-trying-to-ditch-crowds/intro-1708479539.jpg?w=780&resize=780,438&ssl=1"
       },
       {
         id: 10,
@@ -127,7 +127,7 @@ export const destinationData = {
         advantages: ["Less touristy", "Great for day trips"],
         comparedTo: "Panglao",
         priceRange: "$",
-        imageUrl: "https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg"
+        imageUrl: "https://www.jonnymelon.com/wp-content/uploads/2019/10/mantigue-island.jpg"
       }
     ]
   },

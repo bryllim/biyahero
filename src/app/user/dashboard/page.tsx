@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 // Updated mock data with more realistic content
-const mockUserData = {
+const mockUserData: User = {
   id: 'usr_748159263',
   name: 'Alexandra Chen',
   email: 'alex.chen@example.com',
@@ -124,25 +124,68 @@ const mockUserData = {
     reviewsWritten: 8
   },
   joinedAt: '2024-01-01'
-} as const;
+};
 
 export default function UserDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // In a real app, fetch user data from API
-    // For demo, get from localStorage or use mock data
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    } else {
-      setUser(mockUserData);
-    }
+    const loadUserData = async () => {
+      try {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          setUser(JSON.parse(userData));
+        } else {
+          // Remove the 'as const' to make it compatible with User type
+          setUser(mockUserData as User);
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserData();
   }, []);
 
-  if (!user) return null;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="animate-pulse space-y-8">
+            <div className="h-64 bg-white rounded-3xl"></div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <div className="h-96 bg-white rounded-3xl"></div>
+              </div>
+              <div className="h-96 bg-white rounded-3xl"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900">User not found</h2>
+          <button 
+            onClick={() => router.push('/')}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+          >
+            Return Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const getBadgeLevelColor = (level: string) => {
     const colors = {
@@ -151,6 +194,22 @@ export default function UserDashboard() {
       silver: 'from-gray-400 to-gray-500'
     };
     return colors[level as keyof typeof colors] || 'from-blue-500 to-blue-600';
+  };
+
+  // Stats section with null check
+  const renderStats = () => {
+    if (!user.stats) return null;
+    
+    return (
+      <div className="flex gap-8">
+        {Object.entries(user.stats).map(([key, value]) => (
+          <div key={key} className="text-center">
+            <p className="text-2xl font-bold text-gray-900">{value}</p>
+            <p className="text-sm text-gray-600">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -183,14 +242,7 @@ export default function UserDashboard() {
           </div>
           <div className="pt-16 pb-6 px-8">
             <div className="flex items-center justify-between">
-              <div className="flex gap-8">
-                {Object.entries(user.stats).map(([key, value]) => (
-                  <div key={key} className="text-center">
-                    <p className="text-2xl font-bold text-gray-900">{value}</p>
-                    <p className="text-sm text-gray-600">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                  </div>
-                ))}
-              </div>
+              {renderStats()}
               <button className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium 
                                text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 
                                hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow">
