@@ -8,6 +8,12 @@ import type { Destination, ExperienceData } from '@/data/destinations'
 import PlaceholderImage from '@/components/PlaceholderImage'
 import Navbar from '@/components/Navbar'
 
+type Filters = {
+  location: string;
+  bestTime: string;
+  priceRange: string;
+};
+
 function DestinationCard({ destination, index }: { destination: Destination; index: number }) {
   const router = useRouter();
 
@@ -64,6 +70,47 @@ function DestinationCard({ destination, index }: { destination: Destination; ind
   );
 }
 
+const SelectWrapper = ({ label, value, onChange, options }: {
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: Array<{ value: string; label: string; }>
+}) => (
+  <div className="relative">
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      {label}
+    </label>
+    <div className="relative">
+      <select
+        value={value}
+        onChange={onChange}
+        className="w-full px-4 py-2.5 appearance-none bg-white border border-gray-200 
+                 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-300
+                 pr-10 cursor-pointer hover:border-gray-300 transition-colors"
+      >
+        {options.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+        <svg 
+          className="w-5 h-5 text-gray-400" 
+          viewBox="0 0 20 20" 
+          fill="currentColor"
+        >
+          <path 
+            fillRule="evenodd" 
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" 
+            clipRule="evenodd" 
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+);
+
 export default function ExperiencePage() {
   const params = useParams();
   const experienceType = params.type as string;
@@ -72,6 +119,11 @@ export default function ExperiencePage() {
   const [data, setData] = useState<ExperienceData | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isMapView, setIsMapView] = useState(false);
+  const [filters, setFilters] = useState<Filters>({
+    location: '',
+    bestTime: '',
+    priceRange: ''
+  });
 
   useEffect(() => {
     try {
@@ -86,12 +138,81 @@ export default function ExperiencePage() {
   }, [experienceType]);
 
   const filterDestinations = (destinations: Destination[]) => {
-    if (!searchTerm) return destinations;
-    return destinations.filter(dest => 
-      dest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      dest.location.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    return destinations.filter(dest => {
+      const matchesSearch = !searchTerm || 
+        dest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dest.location.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesLocation = !filters.location || 
+        dest.location.toLowerCase().includes(filters.location.toLowerCase());
+
+      const matchesBestTime = !filters.bestTime || 
+        dest.bestTime.toLowerCase().includes(filters.bestTime.toLowerCase());
+
+      const matchesPriceRange = !filters.priceRange || 
+        !('priceRange' in dest) || 
+        dest.priceRange === filters.priceRange;
+
+      return matchesSearch && matchesLocation && matchesBestTime && matchesPriceRange;
+    });
   };
+
+  const getLocationOptions = () => {
+    if (!data) return [];
+    return Array.from(new Set(
+      [...data.popular, ...data.alternatives].map(dest => dest.location)
+    )).sort();
+  };
+
+  const filterSection = data && (
+    <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <SelectWrapper
+        label="Location"
+        value={filters.location}
+        onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+        options={[
+          { value: '', label: 'All Locations' },
+          ...getLocationOptions().map(location => ({
+            value: location,
+            label: location
+          }))
+        ]}
+      />
+
+      <SelectWrapper
+        label="Best Time to Visit"
+        value={filters.bestTime}
+        onChange={(e) => setFilters({ ...filters, bestTime: e.target.value })}
+        options={[
+          { value: '', label: 'Any Time' },
+          { value: 'january', label: 'January' },
+          { value: 'february', label: 'February' },
+          { value: 'march', label: 'March' },
+          { value: 'april', label: 'April' },
+          { value: 'may', label: 'May' },
+          { value: 'june', label: 'June' },
+          { value: 'july', label: 'July' },
+          { value: 'august', label: 'August' },
+          { value: 'september', label: 'September' },
+          { value: 'october', label: 'October' },
+          { value: 'november', label: 'November' },
+          { value: 'december', label: 'December' }
+        ]}
+      />
+
+      <SelectWrapper
+        label="Price Range"
+        value={filters.priceRange}
+        onChange={(e) => setFilters({ ...filters, priceRange: e.target.value })}
+        options={[
+          { value: '', label: 'Any Price' },
+          { value: '$', label: 'Budget ($)' },
+          { value: '$$', label: 'Mid-Range ($$)' },
+          { value: '$$$', label: 'Luxury ($$$)' }
+        ]}
+      />
+    </div>
+  );
 
   if (error) {
     return (
@@ -127,6 +248,9 @@ export default function ExperiencePage() {
             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100"
           />
         </div>
+
+        {/* Add Filter Section */}
+        {filterSection}
 
         {/* Destinations Grid */}
         <div className="space-y-8">
