@@ -13,7 +13,9 @@ const experiences = [
       </svg>
     ),
     description: "Discover pristine white sand beaches and crystal-clear waters perfect for swimming, diving, and island hopping.",
-    bgColor: "bg-blue-50"
+    bgColor: "bg-blue-50",
+    popularImage: "https://images.unsplash.com/photo-1551966775-8b8c7a8b7755", // Boracay image
+    hiddenGemImage: "https://images.unsplash.com/photo-1597953601374-1ff2d5640c85" // Calaguas Islands image
   },
   { 
     id: 2, 
@@ -25,7 +27,9 @@ const experiences = [
       </svg>
     ),
     description: "Explore majestic peaks, trek through lush forests, and experience breathtaking views of the Philippine highlands.",
-    bgColor: "bg-blue-50"
+    bgColor: "bg-blue-50",
+    popularImage: "https://images.pexels.com/photos/4215113/pexels-photo-4215113.jpeg", // Mt. Pulag image
+    hiddenGemImage: "https://images.pexels.com/photos/2562992/pexels-photo-2562992.jpeg" // Mt. Ulap image
   },
   { 
     id: 3, 

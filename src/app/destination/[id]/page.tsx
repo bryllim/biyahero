@@ -37,6 +37,7 @@ interface DestinationDetails {
     midRange: string[];
     luxury: string[];
   };
+  imageUrl: string;
 }
 
 function DestinationSkeleton() {
@@ -118,7 +119,17 @@ export default function DestinationPage() {
           {/* Hero Image Card */}
           <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm mb-8">
             <div className="h-[400px] relative">
-              <PlaceholderImage />
+              {destination?.imageUrl ? (
+                <img
+                  src={destination.imageUrl}
+                  alt={destination.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <PlaceholderImage />
+              )}
+              {/* Optional overlay for better text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
             </div>
             <div className="p-8">
               <h1 className="text-4xl font-bold text-gray-800 mb-4">{destination?.name}</h1>
