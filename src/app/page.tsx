@@ -2,6 +2,15 @@
 
 import Image from "next/image";
 import Link from 'next/link';
+import { useState } from 'react';
+
+// Add this type for province data
+interface Province {
+  id: string;
+  name: string;
+  path: string;
+  visited: boolean;
+}
 
 const experiences = [
   { 
@@ -85,6 +94,19 @@ const experiences = [
 const navLinks = ["Home", "About", "Experiences", "Contact"];
 
 export default function Home() {
+  const [provinces, setProvinces] = useState<Province[]>([
+    // Add all provinces here with their SVG paths
+    { id: 'batanes', name: 'Batanes', path: 'M...', visited: false },
+    { id: 'ilocos_norte', name: 'Ilocos Norte', path: 'M...', visited: false },
+    // ... add more provinces
+  ]);
+
+  const toggleProvince = (id: string) => {
+    setProvinces(provinces.map(province => 
+      province.id === id ? { ...province, visited: !province.visited } : province
+    ));
+  };
+
   const handleExperienceClick = (experienceName: string) => {
     const experienceType = experienceName.toLowerCase();
     window.location.href = `/experiences/${experienceType}`;

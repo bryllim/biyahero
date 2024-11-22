@@ -23,9 +23,9 @@ import TravelMapCard from '@/components/TravelMapCard';
 // Enhanced mock data with more realistic content
 const mockUserData: User = {
   id: 'usr_748159263',
-  name: 'Alexandra Chen',
+  name: 'Jose Manalo',
   email: 'alex.chen@example.com',
-  avatar: 'https://api.dicebear.com/7.x/personas/svg?seed=Alex',
+  avatar: 'https://t3.ftcdn.net/jpg/05/21/68/94/360_F_521689445_kYOCeSu2Boz6anCk7G8ua2YpaansE5D7.jpg',
   role: 'Adventure Seeker',
   bio: 'Passionate traveler exploring the hidden gems of Southeast Asia. 📸 Photography enthusiast. 🌏 25 countries and counting!',
   badges: [
