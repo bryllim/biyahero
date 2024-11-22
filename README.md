@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Experience Philippines 🌴
 
-## Getting Started
+Experience Philippines is a revolutionary travel platform that reimagines how tourists discover destinations in the Philippines. Instead of the traditional destination-first approach, users explore through experiences - from pristine beaches and majestic mountains to vibrant festivals and authentic local cuisine.
 
-First, run the development server:
+## 🎯 Mission
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Our platform has two core missions:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Democratizing Tourism** - We level the playing field between small local businesses and large commercial establishments. A family-owned restaurant can shine just as brightly as a chain, and a charming B&B can compete with luxury hotels based on the authentic experiences they offer.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Gamifying Travel** - We transform Philippine tourism into an engaging adventure through gamification. Travelers earn badges, unlock achievements, and share their journey with a community of fellow explorers.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Key Features
 
-## Learn More
+### For Travelers
+- **Experience-Based Discovery** - Find destinations based on what you want to do, not just where you want to go
+- **Interactive Travel Badges** - Earn and collect badges for visiting different destinations
+- **Smart Itinerary Planning** - AI-powered trip planning based on your selected experiences
+- **Community Sharing** - Share your achievements and travel stories with friends
+- **Alternative Destinations** - Discover hidden gems alongside popular spots
 
-To learn more about Next.js, take a look at the following resources:
+### For Local Businesses
+- **Equal Visibility** - Small businesses appear alongside established players
+- **Experience Categorization** - List your business under relevant experience categories
+- **Business Dashboard** - Track visitor engagement and manage your listing
+- **Authentic Storytelling** - Showcase what makes your business unique
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🗺️ Experience Categories
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 🏖️ **Beaches** - From famous white sand beaches to hidden coves
+- ⛰️ **Mountains** - Hiking trails and mountain retreats
+- 🍜 **Food** - Local cuisine and dining experiences
+- 🎭 **Festivals** - Traditional celebrations and cultural events
+- 🛍️ **Shopping** - Markets, malls, and artisan crafts
+- 🏛️ **Heritage** - Historical sites and cultural landmarks
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Getting Started
