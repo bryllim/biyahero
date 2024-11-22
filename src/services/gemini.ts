@@ -1,3 +1,5 @@
+import { destinationData } from '@/data/destinations';
+
 const GEMINI_API_KEY = 'AIzaSyBxWXimHVJ2sdPd57U95vV6C1Mbm72uuG8';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
@@ -222,28 +224,57 @@ export async function fetchDestinations(experienceType: string): Promise<Destina
 }
 
 export async function fetchDestinationDetails(destinationId: string) {
-  const prompt = `Generate detailed information about this Philippine destination with ID ${destinationId}.
-    Include the following sections:
-    - A comprehensive description (at least 200 words)
-    - Best time to visit with weather conditions
-    - Top activities and experiences (at least 5)
-    - Local cuisine highlights
-    - Travel tips and recommendations
-    - How to get there
-    - Accommodation options (budget, mid-range, luxury)
+  // First try to find the destination in our existing data
+  for (const category of Object.values(destinationData)) {
+    const destination = [...category.popular, ...category.alternatives]
+      .find(dest => dest.id.toString() === destinationId);
     
-    Format the response as a JSON object with these keys:
-    - name (string)
-    - description (string)
-    - bestTimeToVisit (object with 'period' and 'details' keys)
-    - activities (array of objects with 'name' and 'description' keys)
-    - cuisine (array of objects with 'name' and 'description' keys)
-    - travelTips (array of strings)
-    - transportation (object with 'howToGetThere' and 'localTransport' keys)
-    - accommodation (object with 'budget', 'midRange', and 'luxury' arrays)
-    
-    Make it detailed and informative for travelers. Ensure the response is valid JSON format.`;
+    if (destination) {
+      // Return the destination in the format we need
+      return {
+        name: destination.name,
+        description: destination.description,
+        bestTimeToVisit: {
+          period: destination.bestTime,
+          details: `Best time to visit ${destination.name} is during ${destination.bestTime} when the weather is most favorable for all activities.`
+        },
+        activities: destination.activities.map((activity: string) => ({
+          name: activity,
+          description: `Experience ${activity} in ${destination.name}`
+        })),
+        cuisine: [
+          {
+            name: "Local Specialties",
+            description: `Try the local delicacies and fresh seafood in ${destination.name}`
+          },
+          {
+            name: "Street Food",
+            description: "Experience authentic Filipino street food and snacks"
+          }
+        ],
+        travelTips: [
+          `Best to visit ${destination.name} during ${destination.bestTime}`,
+          destination.isAlternative ? "Less crowded than popular destinations" : "Book accommodations in advance",
+          "Bring appropriate clothing and gear",
+          "Learn basic Filipino phrases",
+          "Always carry cash for local purchases"
+        ],
+        transportation: {
+          howToGetThere: `You can reach ${destination.name} through ${destination.location}'s main transportation hubs.`,
+          localTransport: "Local transportation options include tricycles, jeepneys, and boats for island destinations."
+        },
+        accommodation: {
+          budget: ["Local guesthouses", "Backpacker hostels", "Homestays"],
+          midRange: ["Boutique hotels", "Beach resorts", "City hotels"],
+          luxury: ["5-star resorts", "Luxury villas", "Premium hotels"]
+        }
+      };
+    }
+  }
 
+  // If destination not found in our data, then try the AI generation
+  const prompt = `Generate detailed information about this Philippine destination with ID ${destinationId}...`;
+  
   try {
     const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
       method: 'POST',
@@ -255,7 +286,19 @@ export async function fetchDestinationDetails(destinationId: string) {
           parts: [{
             text: prompt
           }]
-        }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
+        ]
       })
     });
 
@@ -272,49 +315,59 @@ export async function fetchDestinationDetails(destinationId: string) {
     const textContent = data.candidates[0].content.parts[0].text;
     
     try {
-      const jsonMatch = textContent.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        console.error('No JSON found in response:', textContent);
-        throw new Error('No JSON data found in response');
-      }
+      // Clean the response text and parse JSON
+      const cleanedJson = textContent
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+        .replace(/\\n/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
 
-      const cleanedJson = jsonMatch[0].replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
       const parsedData = JSON.parse(cleanedJson);
 
-      // Ensure all arrays are properly formatted
-      return {
-        name: parsedData.name || "Unknown Destination",
-        description: parsedData.description || "",
+      // Validate and sanitize the data structure
+      const sanitizedData = {
+        name: String(parsedData.name || "Unknown Destination"),
+        description: String(parsedData.description || ""),
         bestTimeToVisit: {
-          period: parsedData.bestTimeToVisit?.period || "",
-          details: parsedData.bestTimeToVisit?.details || ""
+          period: String(parsedData.bestTimeToVisit?.period || ""),
+          details: String(parsedData.bestTimeToVisit?.details || "")
         },
-        activities: Array.isArray(parsedData.activities) ? parsedData.activities : [],
-        cuisine: Array.isArray(parsedData.cuisine) ? parsedData.cuisine : [],
-        travelTips: Array.isArray(parsedData.travelTips) ? parsedData.travelTips : [],
+        activities: Array.isArray(parsedData.activities) 
+          ? parsedData.activities.map(activity => ({
+              name: String(activity.name || ""),
+              description: String(activity.description || "")
+            }))
+          : [],
+        cuisine: Array.isArray(parsedData.cuisine)
+          ? parsedData.cuisine.map(item => ({
+              name: String(item.name || ""),
+              description: String(item.description || "")
+            }))
+          : [],
+        travelTips: Array.isArray(parsedData.travelTips)
+          ? parsedData.travelTips.map(tip => String(tip))
+          : [],
         transportation: {
-          howToGetThere: typeof parsedData.transportation?.howToGetThere === 'string' 
-            ? parsedData.transportation.howToGetThere 
-            : "Information not available",
-          localTransport: typeof parsedData.transportation?.localTransport === 'string'
-            ? parsedData.transportation.localTransport
-            : "Information not available"
+          howToGetThere: String(parsedData.transportation?.howToGetThere || ""),
+          localTransport: String(parsedData.transportation?.localTransport || "")
         },
         accommodation: {
-          budget: Array.isArray(parsedData.accommodation?.budget) 
-            ? parsedData.accommodation.budget 
+          budget: Array.isArray(parsedData.accommodation?.budget)
+            ? parsedData.accommodation.budget.map(item => String(item))
             : [],
           midRange: Array.isArray(parsedData.accommodation?.midRange)
-            ? parsedData.accommodation.midRange
+            ? parsedData.accommodation.midRange.map(item => String(item))
             : [],
           luxury: Array.isArray(parsedData.accommodation?.luxury)
-            ? parsedData.accommodation.luxury
+            ? parsedData.accommodation.luxury.map(item => String(item))
             : []
         }
       };
 
+      return sanitizedData;
+
     } catch (parseError) {
-      console.error('JSON Parse Error:', parseError);
+      console.error('JSON Parse Error:', parseError, 'Raw content:', textContent);
       throw new Error('Failed to parse destination details');
     }
 
@@ -361,6 +414,164 @@ export async function fetchDestinationDetails(destinationId: string) {
         budget: ["Backpacker hostels", "Budget guesthouses"],
         midRange: ["Boutique hotels", "Beach resorts"],
         luxury: ["5-star resorts", "Private villas"]
+      }
+    };
+  }
+}
+
+interface ItineraryParams {
+  destination: string;
+  startDate: string;
+  duration: string;
+  budget: string;
+  travelStyle: string;
+  groupSize: string;
+  otherPreferences: string;
+  preferences: {
+    accommodation: string;
+    transportation: string;
+    food: string;
+  };
+}
+
+export async function generateItinerary(params: ItineraryParams) {
+  const prompt = `Generate a detailed ${params.duration}-day itinerary for a trip to ${params.destination} in the Philippines.
+
+  Trip Details:
+  - Start Date: ${params.startDate}
+  - Duration: ${params.duration} days
+  - Budget: ₱${params.budget} per day
+  - Travel Style: ${params.travelStyle}
+  - Group Size: ${params.groupSize} people
+  - Preferences: ${params.otherPreferences}
+
+  Create a comprehensive day-by-day itinerary with specific times, activities, locations, and helpful tips.
+  Include estimated costs for activities, meals, and transportation.
+  
+  Format the response as a JSON object with this exact structure:
+  {
+    "title": "string",
+    "overview": "string",
+    "days": [
+      {
+        "day": number,
+        "activities": [
+          {
+            "time": "string (e.g., '09:00 AM')",
+            "activity": "string",
+            "description": "string",
+            "location": "string",
+            "tips": "string (optional)"
+          }
+        ]
+      }
+    ],
+    "additionalTips": ["string"],
+    "estimatedBudget": {
+      "total": "string (e.g., '₱15,000')",
+      "breakdown": [
+        {
+          "category": "string",
+          "amount": "string",
+          "details": "string"
+        }
+      ]
+    }
+  }
+
+  Make it detailed and realistic, considering local transportation times, opening hours, and weather conditions.
+  Include local food recommendations and cultural experiences.
+  Ensure the budget breakdown is accurate and includes all necessary expenses.`;
+
+  try {
+    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+      throw new Error('Invalid API response structure');
+    }
+
+    const textContent = data.candidates[0].content.parts[0].text;
+    
+    try {
+      const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('No JSON data found in response');
+      }
+
+      const cleanedJson = jsonMatch[0]
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+        .replace(/\\n/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      return JSON.parse(cleanedJson);
+
+    } catch (parseError) {
+      console.error('JSON Parse Error:', parseError);
+      throw new Error('Failed to parse itinerary data');
+    }
+
+  } catch (error) {
+    console.error('Error generating itinerary:', error);
+    // Return fallback data
+    return {
+      title: "Your Philippine Adventure",
+      overview: "A personalized itinerary combining must-see attractions with local experiences...",
+      days: [
+        {
+          day: 1,
+          activities: [
+            {
+              time: "09:00 AM",
+              activity: "Breakfast at Local Cafe",
+              description: "Start your day with traditional Filipino breakfast...",
+              location: "City Center",
+              tips: "Try the local coffee!"
+            },
+            // Add more activities...
+          ]
+        },
+        // Add more days...
+      ],
+      additionalTips: [
+        "Always carry cash for local markets",
+        "Download offline maps",
+        "Learn basic Filipino phrases"
+      ],
+      estimatedBudget: {
+        total: "₱15,000",
+        breakdown: [
+          {
+            category: "Accommodation",
+            amount: "₱5,000",
+            details: "Mid-range hotel for 3 nights"
+          },
+          // Add more categories...
+        ]
       }
     };
   }

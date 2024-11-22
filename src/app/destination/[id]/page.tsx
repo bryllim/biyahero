@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { fetchDestinationDetails } from '@/services/gemini'
 import Footer from '@/components/Footer'
+import PlaceholderImage from '@/components/PlaceholderImage'
 
 interface Activity {
   name: string;
@@ -36,8 +37,6 @@ interface DestinationDetails {
     luxury: string[];
   };
 }
-
-const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1559494007-9f5847c49d94";
 
 function DestinationSkeleton() {
   return (
@@ -155,136 +154,152 @@ export default function DestinationPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-8 py-12">
-        <div className="space-y-12">
-          {/* Hero Image */}
-          <div className="relative h-[400px] rounded-2xl overflow-hidden animate-fade-in">
-            <img
-              src={PLACEHOLDER_IMAGE}
-              alt={destination.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-            <div className="absolute bottom-8 left-8 right-8 text-white">
-              <h1 className="text-4xl font-bold mb-2">{destination.name}</h1>
-              <p className="text-lg text-white/90">{destination.description}</p>
+      <div className="w-full">
+        {/* Content Container - moved up */}
+        <div className="max-w-7xl mx-auto px-8 py-12">
+          {/* Hero Image Card */}
+          <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm mb-8">
+            <div className="h-[400px] relative">
+              <PlaceholderImage />
+            </div>
+            <div className="p-8">
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">{destination?.name}</h1>
+              <p className="text-xl text-gray-600">{destination?.description}</p>
             </div>
           </div>
 
-          {/* Best Time to Visit */}
-          <div className="bg-white rounded-2xl p-8 border border-gray-200 space-y-4 hover:shadow-lg 
-                         transition-all duration-300 animate-slide-up">
-            <h2 className="text-2xl font-semibold text-gray-800">Best Time to Visit</h2>
-            <div className="space-y-2">
-              <p className="text-blue-600 font-medium">{destination.bestTimeToVisit.period}</p>
-              <p className="text-gray-600">{destination.bestTimeToVisit.details}</p>
-            </div>
-          </div>
-
-          {/* Activities */}
-          <div className="space-y-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <h2 className="text-2xl font-semibold text-gray-800">Things to Do</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {destination.activities.map((activity, index) => (
-                <div 
-                  key={index}
-                  className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg 
-                           transition-all duration-300 animate-slide-up"
-                  style={{ animationDelay: `${(index + 3) * 100}ms` }}
-                >
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">{activity.name}</h3>
-                  <p className="text-gray-600">{activity.description}</p>
+          {/* Main Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Main Content */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Activities Section */}
+              <div className="bg-white rounded-2xl p-8 border border-gray-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-blue-50 rounded-xl">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-800">Things to Do</h2>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Local Cuisine */}
-          <div className="space-y-6 animate-slide-up" style={{ animationDelay: '400ms' }}>
-            <h2 className="text-2xl font-semibold text-gray-800">Local Cuisine</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {destination.cuisine.map((item, index) => (
-                <div 
-                  key={index}
-                  className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg 
-                           transition-all duration-300 animate-slide-up"
-                  style={{ animationDelay: `${(index + 5) * 100}ms` }}
-                >
-                  <h3 className="text-lg font-medium text-gray-800 mb-2">{item.name}</h3>
-                  <p className="text-gray-600">{item.description}</p>
+                <div className="grid gap-4">
+                  {destination?.activities.map((activity, index) => (
+                    <div 
+                      key={index}
+                      className="p-6 border border-gray-100 rounded-xl hover:border-blue-200 
+                               transition-colors duration-300"
+                    >
+                      <h3 className="text-lg font-medium text-gray-800 mb-2">
+                        {activity.name}
+                      </h3>
+                      <p className="text-gray-600">{activity.description}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* Local Cuisine Section */}
+              <div className="bg-white rounded-2xl p-8 border border-gray-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-blue-50 rounded-xl">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-800">Local Cuisine</h2>
+                </div>
+                <div className="grid gap-4">
+                  {destination?.cuisine.map((item, index) => (
+                    <div 
+                      key={index}
+                      className="p-6 border border-gray-100 rounded-xl hover:border-blue-200 
+                               transition-colors duration-300"
+                    >
+                      <h3 className="text-lg font-medium text-gray-800 mb-2">
+                        {item.name}
+                      </h3>
+                      <p className="text-gray-600">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Transportation Section */}
+              <div className="bg-white rounded-2xl p-8 border border-gray-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-blue-50 rounded-xl">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-800">Getting There & Around</h2>
+                </div>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-800 mb-2">How to Get There</h3>
+                    <p className="text-gray-600">{destination?.transportation.howToGetThere}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-800 mb-2">Local Transportation</h3>
+                    <p className="text-gray-600">{destination?.transportation.localTransport}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Travel Tips */}
-          <div className="bg-white rounded-2xl p-8 border border-gray-200 space-y-4 hover:shadow-lg 
-                         transition-all duration-300 animate-slide-up">
-            <h2 className="text-2xl font-semibold text-gray-800">Travel Tips</h2>
-            <ul className="space-y-3">
-              {destination.travelTips.map((tip, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-gray-600">{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Transportation */}
-          <div className="bg-white rounded-2xl p-8 border border-gray-200 space-y-6 hover:shadow-lg 
-                         transition-all duration-300 animate-slide-up">
-            <h2 className="text-2xl font-semibold text-gray-800">Getting There & Around</h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">How to Get There</h3>
-                <p className="text-gray-600">{destination.transportation.howToGetThere}</p>
+            {/* Right Column - Sidebar */}
+            <div className="space-y-8 lg:sticky" style={{ top: "calc(1rem + 100px)" }}>
+              {/* Best Time to Visit Card */}
+              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Best Time to Visit</h2>
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 rounded-xl">
+                    <p className="text-blue-600 font-medium">{destination?.bestTimeToVisit.period}</p>
+                  </div>
+                  <p className="text-gray-600">{destination?.bestTimeToVisit.details}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Local Transportation</h3>
-                <p className="text-gray-600">{destination.transportation.localTransport}</p>
-              </div>
-            </div>
-          </div>
 
-          {/* Accommodation */}
-          <div className="space-y-6 animate-slide-up" style={{ animationDelay: '600ms' }}>
-            <h2 className="text-2xl font-semibold text-gray-800">Where to Stay</h2>
-            <div className="grid gap-6 md:grid-cols-3">
-              <div 
-                className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg 
-                         transition-all duration-300 animate-slide-up"
-              >
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Budget Options</h3>
-                <ul className="space-y-2">
-                  {destination.accommodation.budget.map((place, index) => (
-                    <li key={index} className="text-gray-600">{place}</li>
+              {/* Travel Tips Card */}
+              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Travel Tips</h2>
+                <ul className="space-y-3">
+                  {destination?.travelTips.map((tip, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-600">{tip}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
-              <div 
-                className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg 
-                         transition-all duration-300 animate-slide-up"
-              >
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Mid-Range Options</h3>
-                <ul className="space-y-2">
-                  {destination.accommodation.midRange.map((place, index) => (
-                    <li key={index} className="text-gray-600">{place}</li>
+
+              {/* Accommodation Card */}
+              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Where to Stay</h2>
+                <div className="space-y-6">
+                  {[
+                    { title: "Budget", options: destination?.accommodation.budget },
+                    { title: "Mid-Range", options: destination?.accommodation.midRange },
+                    { title: "Luxury", options: destination?.accommodation.luxury }
+                  ].map((category, index) => (
+                    <div key={index}>
+                      <h3 className="text-base font-medium text-gray-800 mb-2">{category.title}</h3>
+                      <ul className="space-y-2">
+                        {category.options?.map((place, placeIndex) => (
+                          <li key={placeIndex} className="text-gray-600 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
+                            {place}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
-              </div>
-              <div 
-                className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg 
-                         transition-all duration-300 animate-slide-up"
-              >
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Luxury Options</h3>
-                <ul className="space-y-2">
-                  {destination.accommodation.luxury.map((place, index) => (
-                    <li key={index} className="text-gray-600">{place}</li>
-                  ))}
-                </ul>
+                </div>
               </div>
             </div>
           </div>
