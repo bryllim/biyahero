@@ -1,7 +1,8 @@
 import { destinationData } from '@/data/destinations';
 
-const GEMINI_API_KEY = 'AIzaSyBxWXimHVJ2sdPd57U95vV6C1Mbm72uuG8';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+// Use environment variables instead of hardcoded values
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const GEMINI_API_URL = process.env.NEXT_PUBLIC_GEMINI_API_URL;
 
 // Curated image URLs for different destinations
 const destinationImages = {
@@ -49,6 +50,13 @@ const destinationImages = {
   ]
 };
 
+// Add error handling for missing environment variables
+const validateEnvironmentVariables = () => {
+  if (!GEMINI_API_KEY || !GEMINI_API_URL) {
+    throw new Error('Missing required environment variables for Gemini API');
+  }
+};
+
 export interface Destination {
   id: number;
   name: string;
@@ -66,6 +74,9 @@ export interface Destination {
 }
 
 export async function fetchDestinations(experienceType: string): Promise<Destination[]> {
+  // Validate environment variables before making the API call
+  validateEnvironmentVariables();
+  
   const prompt = `Give me a list of destinations in the Philippines for ${experienceType}, including both popular spots and their lesser-known alternatives. 
 
     For each destination, provide:
