@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { MapPinIcon } from '@heroicons/react/24/outline';
 import { User } from '@/types/user';
 import Image from 'next/image';
+import TravelReceiptModal from './TravelReceiptModal';
 
 interface TravelMapProps {
   user: User;
 }
 
 export default function TravelMapCard({ user }: TravelMapProps) {
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+
   const visitedLocations = {
     'Siargao Islands': { cx: "652.55", cy: "855.00341" },
     'Banaue Rice Terraces': { cx: "290.31", cy: "219.65668" },
@@ -34,10 +38,9 @@ export default function TravelMapCard({ user }: TravelMapProps) {
           <h2 className="text-sm font-semibold text-gray-900">Travel Map</h2>
         </div>
         
-        {/* Replace social share buttons with Travel Receipt button */}
         <button 
           className="px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-2"
-          onClick={() => console.log('Share travel receipt')} // Add your share receipt logic here
+          onClick={() => setIsReceiptModalOpen(true)}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -96,6 +99,13 @@ export default function TravelMapCard({ user }: TravelMapProps) {
           Share your travel map with friends
         </span>
       </div>
+
+      {/* Add Modal */}
+      <TravelReceiptModal 
+        isOpen={isReceiptModalOpen}
+        onClose={() => setIsReceiptModalOpen(false)}
+        user={user}
+      />
     </div>
   );
 } 
