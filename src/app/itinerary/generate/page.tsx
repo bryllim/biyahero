@@ -64,7 +64,7 @@ function ItineraryDaySkeleton() {
   );
 }
 
-function LoadingScreen() {
+function LoadingScreen({ retryCount }: { retryCount: number }) {
   return (
     <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
       <div className="text-center space-y-4">
@@ -75,7 +75,11 @@ function LoadingScreen() {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
         </div>
-        <p className="text-gray-600 animate-pulse">Generating your personalized itinerary...</p>
+        <p className="text-gray-600 animate-pulse">
+          {retryCount > 0 
+            ? `Retrying to generate itinerary... (Attempt ${retryCount})` 
+            : 'Generating your personalized itinerary...'}
+        </p>
       </div>
     </div>
   );
@@ -164,16 +168,25 @@ export default function GenerateItineraryPage() {
   const [itinerary, setItinerary] = useState<GeneratedItinerary | null>(null);
   const [error, setError] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 3;
 
   useEffect(() => {
     let isMounted = true;
+    let retryTimeout: NodeJS.Timeout;
 
     const generateTripItinerary = async () => {
       try {
         setLoading(true);
+        setError(false);
         
+        const destination = searchParams.get('destination');
+        if (!destination) {
+          throw new Error('No destination selected');
+        }
+
         const params = {
-          destination: searchParams.get('destination') || '',
+          destination,
           startDate: searchParams.get('startDate') || '',
           duration: searchParams.get('duration') || '',
           budget: searchParams.get('budget') || '',
@@ -207,11 +220,17 @@ export default function GenerateItineraryPage() {
         setItinerary(result);
         setLoading(false);
         setShowResults(true);
+        setRetryCount(0); // Reset retry count on success
       } catch (err) {
         console.error('Error generating itinerary:', err);
         if (isMounted) {
-          setError(true);
-          setLoading(false);
+          if (retryCount < maxRetries) {
+            setRetryCount(prev => prev + 1);
+            retryTimeout = setTimeout(generateTripItinerary, 3000); // Retry after 3 seconds
+          } else {
+            setError(true);
+            setLoading(false);
+          }
         }
       }
     };
@@ -220,6 +239,9 @@ export default function GenerateItineraryPage() {
 
     return () => {
       isMounted = false;
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
+      }
     };
   }, [searchParams]);
 
@@ -266,7 +288,7 @@ export default function GenerateItineraryPage() {
   );
 
   if (loading) {
-    return <LoadingScreen />;
+    return <LoadingScreen retryCount={retryCount} />;
   }
 
   if (error) {
@@ -280,10 +302,14 @@ export default function GenerateItineraryPage() {
             </svg>
           </div>
           <h2 className="text-xl font-semibold text-gray-800">Failed to Generate Itinerary</h2>
-          <p className="text-gray-600">Something went wrong while generating your itinerary.</p>
+          <p className="text-gray-600">We couldn't generate your itinerary after multiple attempts.</p>
           <div className="flex justify-center gap-4 mt-6">
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                setRetryCount(0);
+                setError(false);
+                setLoading(true);
+              }}
               className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
             >
               Try Again
