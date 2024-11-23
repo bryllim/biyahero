@@ -170,6 +170,8 @@ export default function GenerateItineraryPage() {
   const [showResults, setShowResults] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 3;
+  const [isCustomizing, setIsCustomizing] = useState(false);
+  const [selectedBusinesses, setSelectedBusinesses] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     let isMounted = true;
@@ -245,6 +247,23 @@ export default function GenerateItineraryPage() {
     };
   }, [searchParams]);
 
+  const toggleBusinessSelection = (businessId: number) => {
+    setSelectedBusinesses(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(businessId)) {
+        newSet.delete(businessId);
+      } else {
+        newSet.add(businessId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleCustomizeItinerary = () => {
+    setIsCustomizing(true);
+    // You can implement the customization logic here
+  };
+
   const renderBusinessCard = (business: any, index: number) => (
     <div 
       key={`${business.id}-${index}`}
@@ -283,7 +302,47 @@ export default function GenerateItineraryPage() {
             </span>
           ))}
         </div>
+        <button
+          onClick={() => toggleBusinessSelection(business.id)}
+          className={`w-full mt-3 px-4 py-2 text-sm font-medium rounded-lg transition-colors
+            ${selectedBusinesses.has(business.id)
+              ? 'bg-green-50 text-green-600 hover:bg-green-100'
+              : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            }`}
+        >
+          {selectedBusinesses.has(business.id) ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Added to Itinerary
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Add to Itinerary
+            </span>
+          )}
+        </button>
       </div>
+    </div>
+  );
+
+  const renderCustomizeButton = () => (
+    <div className="flex justify-end mb-4">
+      <button
+        onClick={handleCustomizeItinerary}
+        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg 
+                 hover:bg-blue-700 transition-colors flex items-center gap-2"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Customize Itinerary
+      </button>
     </div>
   );
 
@@ -396,6 +455,7 @@ export default function GenerateItineraryPage() {
           <div className="col-span-6 space-y-4">
             {itinerary && (
               <>
+                {renderCustomizeButton()}
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
                   <h1 className="text-xl font-bold text-gray-800 mb-3">{itinerary.title}</h1>
                   <p className="text-gray-600 text-sm">{itinerary.overview}</p>
